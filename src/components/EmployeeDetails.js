@@ -45,13 +45,27 @@ export default function EmployeeDetails(props) {
         ...allnonDirectSubordinates,
         ...nextLevelSubordinates,
       ]);
+      nextLevelSubordinates.forEach((item)=>{
+        getEmployeeInfo(item);
+      })
     
+
      
     }
   }, [nextLevelSubordinates]);
  
 
+  const getEmployeeInfo = async (item) => {
+    let response = await fetch(
+      `http://api.additivasia.io/api/v1/assignment/employees/${item}`
+    );
+    let userInfo = await response.json();
+    console.log(userInfo[1]?.["direct-subordinates"]);
+    if (userInfo[1]) {
+      setCurrentLevelSubordinates(userInfo[1]["direct-subordinates"]);
 
+    }
+  };
 
   const getDirectSubordinateEmployeeInfo = async () => {
     let response = await fetch(
@@ -79,6 +93,7 @@ export default function EmployeeDetails(props) {
     console.log(userInfo[1]?.["direct-subordinates"]);
     if (userInfo[1]) {
       setNextLevelSubordinates([...nextLevelSubordinates,...userInfo[1]["direct-subordinates"]]);
+
 
     }
 
